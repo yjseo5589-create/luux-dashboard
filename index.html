@@ -14,6 +14,7 @@ if(mode!=='partners'){const q=new URLSearchParams(location.search);for(const k o
 try{if(mode==='partners'){const q=new URLSearchParams(location.search);if(q.has('month'))state.month=q.get('month');if(['렙사','대행사'].includes(q.get('role')))state.role=q.get('role');state.company=q.get('company')||'';state.query=q.get('query')||'';}}catch{}
 $('role').value=state.role;
 function updatePartnerSearchLabel(){$('company').placeholder=state.role+' 검색';$('company').setAttribute('aria-label',state.role+' 검색');}
+function companyItemsHTML(value){const names=String(value??'').split(/,\s*|\r?\n/).map(name=>name.trim()).filter(Boolean);return names.length?'<div class="placements counterpart-items">'+names.map(name=>'<span class="placement">'+esc(name)+'</span>').join(' ')+'</div>':'';}
 function formatWeeks(value){const text=String(value??'').trim();return /^(?:\d+(?:\.\d+)?)$/.test(text)?text+'주':text;}
 updatePartnerSearchLabel();
 function timestamp(iso){const d=new Date(iso);return '갱신 '+new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Seoul',month:'2-digit',day:'2-digit'}).format(d).split('/').reverse().join('-')+' '+new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Seoul',hour:'2-digit',minute:'2-digit',hour12:false}).format(d)+' KST';}
@@ -77,7 +78,7 @@ function renderExtra(data,reason){
   options($('search-month'),data.months.map(v=>({value:v,label:v})),st.month);options($('search-media'),data.mediaOptions.map(v=>({value:v,label:labelMedia(v)})),st.media);
   if(document.activeElement!==$('search-company'))$('search-company').value=st.company==='전체'?'':st.company;
   $('search-head').innerHTML=data.headers.map(h=>'<th>'+esc(h)+'</th>').join('');
-  $('search-body').innerHTML=data.rows.length?data.rows.map(row=>'<tr>'+row.map((v,i)=>'<td>'+esc(/누적기간/.test(data.headers[i]||'')?formatWeeks(v):v)+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="9" class="empty">'+esc(data.message||'조회 결과가 없습니다.')+'</td></tr>';
+  $('search-body').innerHTML=data.rows.length?data.rows.map(row=>'<tr>'+row.map((v,i)=>'<td>'+(['대행사','렙사'].includes(data.headers[i])?companyItemsHTML(v):esc(/누적기간/.test(data.headers[i]||'')?formatWeeks(v):v))+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="9" class="empty">'+esc(data.message||'조회 결과가 없습니다.')+'</td></tr>';
   box.scrollTop=reason==='poll'?top:0;box.scrollLeft=left;
  }else{
   st.month=data.month;st.media=data.selectedMedia;
