@@ -1,0 +1,7 @@
+{
+  "name": "luux-dashboard-pages",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/*.mjs"
+  }
+}

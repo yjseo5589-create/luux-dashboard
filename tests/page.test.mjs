@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';
+const html=fs.readFileSync('index.html','utf8');
+test('three views share read-only production API and retain automatic refresh',()=>{for(const tab of ['search','media','partners'])assert.ok(html.includes('data-tab="'+tab+'"'));assert.ok(html.includes("fetch('https://luux-partner-dashboard.yj-seo-5589.chatgpt.site'+"));assert.ok(html.includes('30000'));assert.ok(!html.includes('1wipVW'));assert.ok(!html.includes('Bearer '));assert.ok(!html.includes('refresh_token'));for(const [,js]of html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g))new vm.Script(js);});
